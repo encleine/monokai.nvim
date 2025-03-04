@@ -2,11 +2,13 @@ local vim = vim
 
 local M = {}
 
+M.default = {}
+
 M.classic = {
   name = 'monokai',
   base0 = '#222426',
   base1 = '#272a30',
-  base2 = '#26292C',
+  base2 = '#3b3c35',
   base3 = '#2E323C',
   base4 = '#333842',
   base5 = '#4d5154',
@@ -35,7 +37,7 @@ M.pro = {
   name = 'monokai_pro',
   base0 = '#222426',
   base1 = '#211F22',
-  base2 = '#26292C',
+  base2 = '#403e41',
   base3 = '#2E323C',
   base4 = '#333842',
   base5 = '#4d5154',
@@ -64,7 +66,7 @@ M.soda = {
   name = 'monokai_soda',
   base0 = '#222426',
   base1 = '#211F22',
-  base2 = '#26292C',
+  base2 = '#191919',
   base3 = '#2E323C',
   base4 = '#333842',
   base5 = '#4d5154',
@@ -118,6 +120,18 @@ M.ristretto = {
   diff_text = '#23324d',
 }
 
+
+M.highlights = {
+  telescope = require("monokai.telescope"),
+  noice = require("monokai.noice"),
+  nvimcmp = require("monokai.nvim-cmp"),
+  trouble = require("monokai.trouble"),
+  lazy = require("monokai.lazy"),
+  bufferline = require("monokai.bufferline"),
+  folds = require("monokai.folds"),
+  snacks = require("monokai.snacks"),
+}
+
 local function remove_italics(config, colors)
   if not config.italics and colors.style == 'italic' then
     colors.style = nil
@@ -128,13 +142,15 @@ end
 local function highlighter(config)
   return function(group, color)
     color = remove_italics(config, color)
+
     local style = color.style and 'gui=' .. color.style or 'gui=NONE'
     local fg = color.fg and 'guifg = ' .. color.fg or 'guifg = NONE'
     local bg = color.bg and 'guibg = ' .. color.bg or 'guibg = NONE'
     local sp = color.sp and 'guisp = ' .. color.sp or ''
-  vim.cmd(
-    'highlight ' .. group .. ' ' .. style .. ' ' .. fg .. ' ' .. bg .. ' ' .. sp
-  )
+
+    vim.cmd(
+      'highlight ' .. group .. ' ' .. style .. ' ' .. fg .. ' ' .. bg .. ' ' .. sp
+    )
   end
 end
 
@@ -285,14 +301,6 @@ M.load_syntax = function(palette)
     },
     diffRemoved = {
       fg = palette.pink,
-    },
-    Folded = {
-      fg = palette.grey,
-      bg = palette.base3,
-    },
-    FoldColumn = {
-      fg = palette.white,
-      bg = palette.black,
     },
     Constant = {
       fg = palette.aqua,
@@ -446,429 +454,147 @@ M.load_syntax = function(palette)
 end
 
 M.load_plugin_syntax = function(palette)
-  local math_group = {
-    fg = palette.yellow,
-  }
-  local strike_group = {
-    fg = palette.grey,
-  }
-  local todo_group = {
-    fg = palette.aqua,
-  }
-  local uri_group = {
-    fg = palette.aqua,
-    style = 'underline',
-  }
+  local math_group   = { fg = palette.yellow }
+  local strike_group = { fg = palette.grey }
+  local todo_group   = { fg = palette.aqua }
+  local uri_group    = { fg = palette.aqua, style = 'underline' }
+
   return {
-    ["@annotation"] = {
-      fg = palette.green,
-    },
-    ["@attribute"] = {
-      fg = palette.green,
-    },
-    ["@boolean"] = {
-      fg = palette.purple,
-    },
-    ["@character"] = {
-      fg = palette.yellow,
-    },
-    ["@character.special"] = {
-      fg = palette.purple,
-    },
-    ["@comment"] = {
-      fg = palette.base6,
-      style = 'italic',
-    },
-    ["@conceal"] = {
-      fg = palette.grey,
-    },
-    ["@conditional"] = {
-      fg = palette.pink,
-    },
-    ["@conditional.ternary"] = {
-      fg = palette.pink,
-    },
-    ["@constant"] = {
-      fg = palette.aqua,
-    },
-    ["@constant.builtin"] = {
-      fg = palette.purple,
-    },
-    ["@constant.macro"] = {
-      fg = palette.purple,
-    },
-    ["@constructor"] = {
-      fg = palette.aqua,
-    },
-    ["@debug"] = {
-      fg = palette.pink,
-    },
-    ["@define"] = {
-      fg = palette.aqua,
-    },
-    ["@definition"] = {
-      fg = palette.green,
-    },
-    ["@definition.associated"] = {
-      fg = palette.green,
-    },
-    ["@definition.constant"] = {
-      fg = palette.green,
-    },
-    ["@definition.enum"] = {
-      fg = palette.green,
-    },
-    ["@definition.field"] = {
-      fg = palette.green,
-    },
-    ["@definition.function"] = {
-      fg = palette.green,
-    },
-    ["@definition.import"] = {
-      fg = palette.white,
-    },
-    ["@definition.macro"] = {
-      fg = palette.green,
-    },
-    ["@definition.method"] = {
-      fg = palette.green,
-    },
-    ["@definition.namespace"] = {
-      fg = palette.white,
-    },
-    ["@definition.parameter"] = {
-      fg = palette.orange,
-    },
-    ["@definition.type"] = {
-      fg = palette.green,
-    },
-    ["@definition.var"] = {
-      fg = palette.green,
-    },
-    ["@error"] = {
-      fg = palette.red,
-    },
-    ["@exception"] = {
-      fg = palette.pink,
-    },
-    ["@field"] = {
-      fg = palette.white,
-    },
-    ["@float"] = {
-      fg = palette.purple,
-    },
-    ["@function"] = {
-      fg = palette.green,
-      style = 'italic',
-    },
-    ["@function.builtin"] = {
-      fg = palette.aqua,
-    },
-    ["@function.call"] = {
-      fg = palette.white,
-    },
-    ["@function.macro"] = {
-      fg = palette.green,
-      style = 'italic',
-    },
-    ["@include"] = {
-      fg = palette.aqua,
-      style = 'italic',
-    },
-    ["@keyword"] = {
-      fg = palette.pink,
-      style = 'italic',
-    },
-    ["@keyword.function"] = {
-      fg = palette.aqua,
-      style = 'italic',
-    },
-    ["@keyword.operator"] = {
-      fg = palette.pink,
-    },
-    ["@keyword.return"] = {
-      fg = palette.pink,
-    },
-    ["@label"] = {
-      fg = palette.pink,
-    },
-    ["@math"] = math_group,
-    ["@method"] = {
-      fg = palette.green,
-    },
-    ["@method.call"] = {
-      fg = palette.white,
-    },
-    ["@namespace"] = {
-      fg = palette.purple,
-    },
+    ["@annotation"]             = { fg = palette.green },
+    ["@attribute"]              = { fg = palette.green },
+    ["@boolean"]                = { fg = palette.purple, },
+    ["@character"]              = { fg = palette.yellow },
+    ["@character.special"]      = { fg = palette.purple },
+    ["@comment"]                = { fg = palette.base6, style = 'italic' },
+    ["@conceal"]                = { fg = palette.grey },
+    ["@conditional"]            = { fg = palette.pink },
+    ["@conditional.ternary"]    = { fg = palette.pink },
+    ["@constant"]               = { fg = palette.aqua },
+    ["@constant.builtin"]       = { fg = palette.purple },
+    ["@constant.macro"]         = { fg = palette.purple },
+    ["@constructor"]            = { fg = palette.aqua },
+    ["@debug"]                  = { fg = palette.pink },
+    ["@define"]                 = { fg = palette.aqua },
+    ["@definition"]             = { fg = palette.green },
+    ["@definition.associated"]  = { fg = palette.green },
+    ["@definition.constant"]    = { fg = palette.green },
+    ["@definition.enum"]        = { fg = palette.green },
+    ["@definition.field"]       = { fg = palette.green },
+    ["@definition.function"]    = { fg = palette.green },
+    ["@definition.import"]      = { fg = palette.white },
+    ["@definition.macro"]       = { fg = palette.green },
+    ["@definition.method"]      = { fg = palette.green },
+    ["@definition.namespace"]   = { fg = palette.white },
+    ["@definition.parameter"]   = { fg = palette.orange },
+    ["@definition.type"]        = { fg = palette.green },
+    ["@definition.var"]         = { fg = palette.green },
+    ["@error"]                  = { fg = palette.red },
+    ["@exception"]              = { fg = palette.pink },
+    ["@field"]                  = { fg = palette.white },
+    ["@float"]                  = { fg = palette.purple },
+    ["@function"]               = { fg = palette.green, style = 'italic' },
+    ["@function.builtin"]       = { fg = palette.aqua },
+    ["@function.call"]          = { fg = palette.white },
+
+    ["@function.macro"]         = { fg = palette.green, style = 'italic' },
+    ["@include"]                = { fg = palette.aqua, style = 'italic' },
+    ["@keyword"]                = { fg = palette.pink, style = 'italic' },
+    ["@keyword.function"]       = { fg = palette.aqua, style = 'italic' },
+
+    ["@keyword.operator"]       = { fg = palette.pink },
+    ["@keyword.return"]         = { fg = palette.pink },
+    ["@label"]                  = { fg = palette.pink },
+    ["@math"]                   = math_group,
+    ["@method"]                 = { fg = palette.green },
+    ["@method.call"]            = { fg = palette.white },
+    ["@namespace"]              = { fg = palette.purple },
     -- ["@nospell"] = {},
-    ["@number"] = {
-      fg = palette.purple,
-    },
-    ["@operator"] = {
-      fg = palette.pink,
-    },
-    ["@parameter"] = {
-      fg = palette.orange,
-    },
-    ["@parameter.reference"] = {
-      fg = palette.white,
-    },
-    ["@preproc"] = {
-      fg = palette.green,
-    },
-    ["@property"] = {
-      fg = palette.white,
-    },
-    ["@punctuation.bracket"] = {
-      fg = palette.white,
-    },
-    ["@punctuation.delimiter"] = {
-      fg = palette.white,
-    },
-    ["@punctuation.special"] = {
-      fg = palette.pink,
-    },
-    ["@reference"] = {
-      fg = palette.white,
-    },
-    ["@repeat"] = {
-      fg = palette.pink,
-    },
-    ["@scope"] = {
-      fg = palette.white,
-    },
+    ["@number"]                 = { fg = palette.purple },
+    ["@operator"]               = { fg = palette.pink },
+    ["@parameter"]              = { fg = palette.orange },
+    ["@parameter.reference"]    = { fg = palette.white },
+    ["@preproc"]                = { fg = palette.green },
+    ["@property"]               = { fg = palette.white },
+    ["@punctuation.bracket"]    = { fg = palette.white },
+    ["@punctuation.delimiter"]  = { fg = palette.white },
+    ["@punctuation.special"]    = { fg = palette.pink },
+    ["@reference"]              = { fg = palette.white },
+    ["@repeat"]                 = { fg = palette.pink },
+    ["@scope"]                  = { fg = palette.white },
     -- ["@spell"] = {},
-    ["@storageclass"] = {
-      fg = palette.aqua,
-    },
-    ["@storageclass.lifetime"] = {
-      fg = palette.aqua,
-    },
-    ["@strike"] = strike_group,
-    ["@string"] = {
-      fg = palette.yellow,
-    },
-    ["@string.escape"] = {
-      fg = palette.purple,
-    },
-    ["@string.regex"] = {
-      fg = palette.purple,
-    },
-    ["@string.special"] = {
-      fg = palette.purple,
-    },
-    ["@symbol"] = {
-      fg = palette.purple,
-    },
-    ["@tag"] = {
-      fg = palette.pink,
-    },
-    ["@tag.attribute"] = {
-      fg = palette.green,
-    },
-    ["@tag.delimiter"] =  {
-      fg = palette.white,
-    },
-    ["@text"] = {
-      fg = palette.green,
-    },
-    ["@text.danger"] = {
-      fg = palette.red,
-      style = 'bold',
-    },
-    ["@text.diff.add"] = {
-      fg = palette.diff_add,
-    },
-    ["@text.diff.delete"] = {
-      fg = palette.diff_remove,
-    },
-    ["@text.emphasis"] = {
-      style = 'bold',
-    },
-    ["@text.environment"] = {
-      fg = palette.purple,
-    },
-    ["@text.environment.name"] = {
-      fg = palette.aqua,
-    },
-    ["@text.literal"] = {
-      fg = palette.yellow,
-    },
-    ["@text.math"] = math_group,
-    ["@text.note"] = {
-      fg = palette.aqua,
-      style = 'bold',
-    },
-    ["@text.quote"] = {
-      fg = palette.grey,
-    },
-    ["@text.reference"] = {
-      fg = palette.orange,
-      style = 'italic',
-    },
-    ["@text.strike"] = strike_group,
-    ["@text.strong"] = {
-      style = 'bold',
-    },
-    ["@text.title"] = {
-      fg = palette.yellow,
-      style = 'bold',
-    },
-    ["@text.todo"] = todo_group,
-    ["@text.underline"] = {
-      style = 'underline',
-    },
-    ["@text.uri"] = uri_group,
-    ["@text.warning"] = {
-      fg = palette.yellow,
-      style = 'bold',
-    },
-    ["@todo"] = todo_group,
-    ["@type"] = {
-      fg = palette.aqua,
-    },
-    ["@type.builtin"] = {
-      fg = palette.aqua,
-    },
-    ["@type.definition"] = {
-      fg = palette.aqua,
-    },
-    ["@type.qualifier"] = {
-      fg = palette.pink,
-    },
-    ["@uri"] = uri_group,
-    ["@variable"] = {
-      fg = palette.white,
-    },
-    ["@variable.builtin"] = {
-      fg = palette.orange,
-    },
-    dbui_tables = {
-      fg = palette.white,
-    },
-    DiagnosticSignError = {
-      fg = palette.red,
-    },
-    DiagnosticSignWarn = {
-      fg = palette.yellow,
-    },
-    DiagnosticSignInfo = {
-      fg = palette.white,
-    },
-    DiagnosticSignHint = {
-      fg = palette.aqua,
-    },
-    DiagnosticVirtualTextError = {
-      fg = palette.red,
-    },
-    DiagnosticVirtualTextWarn = {
-      fg = palette.yellow,
-    },
-    DiagnosticVirtualTextInfo = {
-      fg = palette.white,
-    },
-    DiagnosticVirtualTextHint = {
-      fg = palette.aqua,
-    },
-    DiagnosticUnderlineError = {
-      style = 'undercurl',
-      sp = palette.red,
-    },
-    DiagnosticUnderlineWarn = {
-      style = 'undercurl',
-      sp = palette.yellow,
-    },
-    DiagnosticUnderlineInfo = {
-      style = 'undercurl',
-      sp = palette.white,
-    },
-    DiagnosticUnderlineHint = {
-      style = 'undercurl',
-      sp = palette.aqua,
-    },
-    CursorWord0 = {
-      bg = palette.white,
-      fg = palette.black,
-    },
-    CursorWord1 = {
-      bg = palette.white,
-      fg = palette.black,
-    },
-    NvimTreeFolderName = {
-      fg = palette.white,
-    },
-    NvimTreeRootFolder = {
-      fg = palette.pink,
-    },
-    NvimTreeSpecialFile = {
-      fg = palette.white,
-      style = 'NONE',
-    },
+    ["@storageclass"]           = { fg = palette.aqua },
+    ["@storageclass.lifetime"]  = { fg = palette.aqua },
+    ["@strike"]                 = strike_group,
+    ["@string"]                 = { fg = palette.yellow },
+    ["@string.escape"]          = { fg = palette.purple },
+    ["@string.regex"]           = { fg = palette.purple },
+    ["@string.special"]         = { fg = palette.purple },
+    ["@symbol"]                 = { fg = palette.purple },
+    ["@tag"]                    = { fg = palette.pink },
+    ["@tag.attribute"]          = { fg = palette.green },
+    ["@tag.delimiter"]          = { fg = palette.white },
+    ["@text"]                   = { fg = palette.green },
+    ["@text.danger"]            = { fg = palette.red, style = 'bold' },
+    ["@text.diff.add"]          = { fg = palette.diff_add },
+    ["@text.diff.delete"]       = { fg = palette.diff_remove },
+    ["@text.emphasis"]          = { style = 'bold' },
+    ["@text.environment"]       = { fg = palette.purple },
+    ["@text.environment.name"]  = { fg = palette.aqua },
+    ["@text.literal"]           = { fg = palette.yellow },
+    ["@text.math"]              = math_group,
+    ["@text.note"]              = { fg = palette.aqua, style = 'bold' },
+    ["@text.quote"]             = { fg = palette.grey },
+    ["@text.reference"]         = { fg = palette.orange, style = 'italic' },
+    ["@text.strike"]            = strike_group,
+    ["@text.strong"]            = { style = 'bold' },
+    ["@text.title"]             = { fg = palette.yellow, style = 'bold' },
+    ["@text.todo"]              = todo_group,
+    ["@text.underline"]         = { style = 'underline' },
+    ["@text.uri"]               = uri_group,
+    ["@text.warning"]           = { fg = palette.yellow, style = 'bold' },
+    ["@todo"]                   = todo_group,
+    ["@type"]                   = { fg = palette.aqua },
+    ["@type.builtin"]           = { fg = palette.aqua },
+    ["@type.definition"]        = { fg = palette.aqua },
+    ["@type.qualifier"]         = { fg = palette.pink },
+    ["@uri"]                    = uri_group,
+    ["@variable"]               = { fg = palette.white },
+    ["@variable.builtin"]       = { fg = palette.orange },
 
-    -- Telescope
-    TelescopeBorder = {
-      fg = palette.base7,
-    },
-    TelescopeNormal = {
-      fg = palette.base8,
-      bg = palette.base0,
-    },
-    TelescopeSelection = {
-      fg = palette.white,
-      style = 'bold',
-    },
-    TelescopeSelectionCaret = {
-      fg = palette.green,
-    },
-    TelescopeMultiSelection = {
-      fg = palette.pink,
-    },
-    TelescopeMatching = {
-      fg = palette.aqua,
-    },
+    dbui_tables                 = { fg = palette.white },
+    DiagnosticSignError         = { fg = palette.red },
+    DiagnosticSignWarn          = { fg = palette.yellow },
+    DiagnosticSignInfo          = { fg = palette.white },
+    DiagnosticSignHint          = { fg = palette.aqua },
+    DiagnosticVirtualTextError  = { fg = palette.red },
+    DiagnosticVirtualTextWarn   = { fg = palette.yellow },
+    DiagnosticVirtualTextInfo   = { fg = palette.white },
 
-    -- hrsh7th/nvim-cmp
-    CmpDocumentation = { fg = palette.white, bg = palette.base1 },
-    CmpDocumentationBorder = { fg = palette.white, bg = palette.base1 },
+    DiagnosticVirtualTextHint   = { fg = palette.aqua },
 
-    CmpItemAbbr = { fg = palette.white },
-    CmpItemAbbrMatch = { fg = palette.aqua },
-    CmpItemAbbrMatchFuzzy = { fg = palette.aqua },
+    DiagnosticUnderlineError    = { style = 'undercurl', sp = palette.red },
 
-    CmpItemKindDefault = { fg = palette.white },
-    CmpItemMenu = { fg = palette.base6 },
+    DiagnosticUnderlineWarn     = { style = 'undercurl', sp = palette.yellow },
 
-    CmpItemKindKeyword = { fg = palette.pink },
-    CmpItemKindVariable = { fg = palette.pink },
-    CmpItemKindConstant = { fg = palette.pink },
-    CmpItemKindReference = { fg = palette.pink },
-    CmpItemKindValue = { fg = palette.pink },
+    DiagnosticUnderlineInfo     = { style = 'undercurl', sp = palette.white },
 
-    CmpItemKindFunction = { fg = palette.aqua },
-    CmpItemKindMethod = { fg = palette.aqua },
-    CmpItemKindConstructor = { fg = palette.aqua },
+    DiagnosticUnderlineHint     = { style = 'undercurl', sp = palette.aqua },
 
-    CmpItemKindClass = { fg = palette.orange },
-    CmpItemKindInterface = { fg = palette.orange },
-    CmpItemKindStruct = { fg = palette.orange },
-    CmpItemKindEvent = { fg = palette.orange },
-    CmpItemKindEnum = { fg = palette.orange },
-    CmpItemKindUnit = { fg = palette.orange },
+    CursorWord0                 = { bg = palette.white, fg = palette.black },
 
-    CmpItemKindModule = { fg = palette.yellow },
+    CursorWord1                 = { bg = palette.white, fg = palette.black },
 
-    CmpItemKindProperty = { fg = palette.green },
-    CmpItemKindField = { fg = palette.green },
-    CmpItemKindTypeParameter = { fg = palette.green },
-    CmpItemKindEnumMember = { fg = palette.green },
-    CmpItemKindOperator = { fg = palette.green },
+    NvimTreeFolderName          = { fg = palette.white },
+
+    NvimTreeRootFolder          = { fg = palette.pink },
+
+    NvimTreeSpecialFile         = { fg = palette.white, style = 'NONE' },
 
     -- ray-x/lsp_signature.nvim
     LspSignatureActiveParameter = { fg = palette.orange },
   }
 end
+
 
 local default_config = {
   palette = M.classic,
@@ -881,26 +607,40 @@ M.setup = function(config)
   if vim.fn.exists('syntax_on') then
     vim.cmd('syntax reset')
   end
+
   vim.o.background = 'dark'
   vim.o.termguicolors = true
   config = config or {}
   config = vim.tbl_deep_extend('keep', config, default_config)
+
   local used_palette = config.palette or M.classic
   vim.g.colors_name = used_palette.name
+
   local syntax = M.load_syntax(used_palette)
   syntax = vim.tbl_deep_extend('keep', config.custom_hlgroups, syntax)
+
   local highlight = highlighter(config)
   for group, colors in pairs(syntax) do
     highlight(group, colors)
   end
+
   local plugin_syntax = M.load_plugin_syntax(used_palette)
   plugin_syntax = vim.tbl_deep_extend(
     'keep',
     config.custom_hlgroups,
     plugin_syntax
   )
+
   for group, colors in pairs(plugin_syntax) do
     highlight(group, colors)
+  end
+
+
+
+  for _, highlightGrop in pairs(M.highlights) do
+    for group, colors in pairs(highlightGrop(used_palette)) do
+      highlight(group, colors)
+    end
   end
 end
 
