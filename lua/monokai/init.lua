@@ -613,7 +613,11 @@ M.setup = function(config)
 	config = config or {}
 	config = vim.tbl_deep_extend('keep', config, default_config)
 
-	local used_palette = config.palette or M.classic
+	local used_palette = M[config.palette]
+	if not used_palette then
+		used_palette = M.classic
+	end
+
 	vim.g.colors_name = used_palette.name
 
 	local syntax = M.load_syntax(used_palette)
